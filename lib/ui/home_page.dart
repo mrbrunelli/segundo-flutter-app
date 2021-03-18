@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:segundo_flutter_app/funcoes.dart';
+import 'package:segundo_flutter_app/ui/contato_page.dart';
+import 'package:segundo_flutter_app/widgets/campo_texto.dart';
+import 'package:share/share.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,20 +14,27 @@ class _HomePageState extends State<HomePage> {
   final etanolController = TextEditingController();
   final gasolinaController = TextEditingController();
   var resultado = "";
+  Funcoes func = new Funcoes();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Etanol x Gasolina"),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.share),
+            onPressed: _compartilhar,
+          ),
+        ],
       ),
       floatingActionButton: criarBotaoFlutuante(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          criarCampoTexto(etanolController, "Valor do Etanol", "R\$ "),
-          criarCampoTexto(gasolinaController, "Valor da Gasolina", "R\$ "),
+          CampoTexto.criar(etanolController, "Valor do Etanol", "R\$ ", TextInputType.number),
+          CampoTexto.criar(gasolinaController, "Valor da Gasolina", "R\$ ", TextInputType.number),
           criarTextoResultado(resultado),
         ],
       ),
@@ -33,8 +44,8 @@ class _HomePageState extends State<HomePage> {
   Widget criarBotaoFlutuante() {
     return FloatingActionButton(
       backgroundColor: Colors.blue,
-      child: Icon(Icons.attach_money_outlined, color: Colors.white, size: 40,),
-      onPressed: eventoCalcular,
+      child: Icon(Icons.mail_outline, color: Colors.white, size: 40,),
+      onPressed: _abrirTelaContato,
     );
   }
 
@@ -54,25 +65,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget criarCampoTexto(TextEditingController ctx, String label, String prefix) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-      child: TextField(
-        controller: ctx,
-        decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: label,
-            labelStyle: TextStyle(color: Colors.blue, fontSize: 22),
-            prefixText: prefix,
-            prefixStyle: TextStyle(color: Colors.green[900], fontSize: 32)
-        ),
-        style: TextStyle(color: Colors.blue, fontSize: 50),
-        keyboardType: TextInputType.number,
-      ),
-    );
-  }
-
   void eventoCalcular() {
+    if (etanolController.text.isEmpty) {
+      func.mostrarMensagem(context, "Atenção", "Valor do Etanol deve ser preenchido!");
+      return;
+    }
+    if (gasolinaController.text.isEmpty) {
+      func.mostrarMensagem(context, "Atenção", "Valor da Gasolina deve ser preenchido!");
+      return;
+    }
     double valorEtanol = double.parse(etanolController.text);
     double valorGasolina = double.parse(gasolinaController.text);
     if (valorEtanol <= (valorGasolina * 0.7)) {
@@ -84,8 +85,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   void eventoOla() {
+    func.mostrarMensagem(context, "Atenção", "Você abriu o AlertDialog");
     setState(() {
       resultado = "Olá Mundo!";
     });
+  }
+
+  void _compartilhar() {
+    Share.share("Etanol: " + etanolController.text + ". Gasolina: " + gasolinaController.text);
+  }
+
+  void _abrirTelaContato() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ContatoPage())
+    );
   }
 }
