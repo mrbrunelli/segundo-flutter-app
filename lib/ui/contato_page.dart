@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+import 'package:segundo_flutter_app/funcoes.dart';
 import 'package:segundo_flutter_app/widgets/barra_titulo.dart';
 import 'package:segundo_flutter_app/widgets/botao.dart';
 import 'package:segundo_flutter_app/widgets/campo_texto.dart';
@@ -32,7 +35,25 @@ class _ContatoPageState extends State<ContatoPage> {
     );
   }
 
-  void enviar() {
+  Future<void> enviar() async {
+    String usuario = "meu_email@gmail.com";
+    String token = "token_maluco_de_acesso";
+    final servidorSMTP = gmailSaslXoauth2(usuario, token);
+    final mensagem = Message()
+      ..from("Contato App", usuario)
+      ..recipients.add(usuario)
+      ..subject = "Contato App"
+      ..text = "Nome: ${nomeController.text}. E-mail: ${emailController}. Mensagem: ${mensagemController}";
+    final enviar = await send(mensagem, servidorSMTP);
+    setState(() {
+      _esvaziarInput(nomeController);
+      _esvaziarInput(emailController);
+      _esvaziarInput(mensagemController);
+      Funcoes().mostrarMensagem(context, "Contato", "E-mail enviadoc com sucesso!");
+    });
+  }
 
+  void _esvaziarInput(TextEditingController input) {
+    input.text = "";
   }
 }
