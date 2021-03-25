@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:segundo_flutter_app/widgets/barra_titulo.dart';
+import 'package:segundo_flutter_app/widgets/botao.dart';
 import 'package:segundo_flutter_app/widgets/campo_texto.dart';
 
 class ContatoPage extends StatefulWidget {
@@ -14,16 +16,23 @@ class _ContatoPageState extends State<ContatoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Etanol x Gasolina"),
-      ),
-      body: Column(
+      appBar: BarraTitulo.criar("Contato", icone: Icons.mail_outline),
+      body: ListView(
         children: [
           CampoTexto.criar(nomeController, "Nome", "", TextInputType.text),
           CampoTexto.criar(emailController, "E-mail", "", TextInputType.emailAddress),
           CampoTexto.criar(mensagemController, "Mensagem", "", TextInputType.text),
+          Column(
+            children: [
+              Botao.criar("Enviar", enviar),
+            ],
+          ),
         ],
       )
     );
+  }
+
+  void enviar() {
+
   }
 }

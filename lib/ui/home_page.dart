@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:segundo_flutter_app/funcoes.dart';
 import 'package:segundo_flutter_app/ui/contato_page.dart';
+import 'package:segundo_flutter_app/widgets/barra_titulo.dart';
+import 'package:segundo_flutter_app/widgets/botao.dart';
 import 'package:segundo_flutter_app/widgets/campo_texto.dart';
 import 'package:share/share.dart';
 
@@ -19,35 +21,24 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Etanol x Gasolina"),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.share),
-            onPressed: _compartilhar,
-          ),
-        ],
-      ),
-      floatingActionButton: criarBotaoFlutuante(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
+      appBar: BarraTitulo.criar("Etanol X Gasolina", iconeAcao: Icons.share, evento: _compartilhar),
+      floatingActionButton: Botao.criarBotaoFlutuante(Icons.arrow_forward, _abrirTelaContato),
+      body: ListView(
         children: <Widget>[
           CampoTexto.criar(etanolController, "Valor do Etanol", "R\$ ", TextInputType.number),
           CampoTexto.criar(gasolinaController, "Valor da Gasolina", "R\$ ", TextInputType.number),
+          Column(
+            children: [
+              Botao.criar("Calcular", eventoCalcular),
+            ],
+          ),
           criarTextoResultado(resultado),
         ],
       ),
     );
   }
 
-  Widget criarBotaoFlutuante() {
-    return FloatingActionButton(
-      backgroundColor: Colors.blue,
-      child: Icon(Icons.mail_outline, color: Colors.white, size: 40,),
-      onPressed: _abrirTelaContato,
-    );
-  }
+
 
   Widget criarBotao(String txt, Function e) {
     return Container(
@@ -82,13 +73,6 @@ class _HomePageState extends State<HomePage> {
       resultado = "Melhor abastecer com Gasolina.";
     }
     setState(() {});
-  }
-
-  void eventoOla() {
-    func.mostrarMensagem(context, "Atenção", "Você abriu o AlertDialog");
-    setState(() {
-      resultado = "Olá Mundo!";
-    });
   }
 
   void _compartilhar() {

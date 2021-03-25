@@ -20,6 +20,17 @@ class Funcoes {
         }
     );
   }
+
+  static Widget criarIcone(IconData icone) {
+    return icone != null ? _criarIconeEspacado(icone) : Container();
+  }
+  
+  static _criarIconeEspacado(IconData icone) {
+    return Padding(
+      padding: EdgeInsets.all(4),
+      child: Icon(icone),
+    );
+  }
   
   void _fecharTelaAtual(BuildContext context) {
     Navigator.pop(context);
